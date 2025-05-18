@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'timescale.db',
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
@@ -87,7 +88,7 @@ WSGI_APPLICATION = 'Estacao.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis', 
+        'ENGINE': 'timescale.db.backends.postgis', 
         'NAME': 'estacao_teste',
         'USER': 'postgres',
         'PASSWORD': 'daviddb',
@@ -96,6 +97,7 @@ DATABASES = {
     }
 }
 
+TIMESCALE_MIGRATE_HYPERTABLE_WITH_FRESH_TABLE = True
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
