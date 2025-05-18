@@ -3,6 +3,8 @@ from Dispositivo.models import Dispositivo
 from Direcao_Vento.models import DirecaoVento
 from timescale.db.models.fields import TimescaleDateTimeField
 from timescale.db.models.managers import TimescaleManager
+from timescale.db.models.fields import TimescaleDateTimeField
+from timescale.db.models.managers import TimescaleManager
 
 class DadoClimatico(models.Model):
 

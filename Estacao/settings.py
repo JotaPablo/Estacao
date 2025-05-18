@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'timescale.db',
     'corsheaders',
+    'timescale.db',
     'rest_framework',
     'rest_framework.authtoken',
     'Dispositivo',
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     'Direcao_Vento',
 
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
