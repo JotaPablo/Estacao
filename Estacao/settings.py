@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'corsheaders',
+    'timescale.db',
     'rest_framework',
     'rest_framework.authtoken',
     'Dispositivo',
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     'Direcao_Vento',
 
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -87,7 +89,7 @@ WSGI_APPLICATION = 'Estacao.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis', 
+        'ENGINE': 'timescale.db.backends.postgis', 
         'NAME': 'estacao_teste',
         'USER': 'jpablo',
         'PASSWORD': 'password',
