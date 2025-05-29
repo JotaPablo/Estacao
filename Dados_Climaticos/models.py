@@ -6,13 +6,15 @@ from timescale.db.models.managers import TimescaleManager
 from timescale.db.models.fields import TimescaleDateTimeField
 from timescale.db.models.managers import TimescaleManager
 
-class DadoClimatico(models.Model):
+from timescale.db.models.models import TimescaleModel
 
-    timescale = TimescaleManager()
-    time = TimescaleDateTimeField(interval="1 day", null= True)
-    objects = models.Manager()
+class DadoClimatico(TimescaleModel):
+    
+    class Meta:
+        db_table = "dado_climatico"
+
     dispositivo = models.ForeignKey(Dispositivo, on_delete=models.CASCADE)
-    data = models.DateTimeField()
+    #data = models.DateTimeField()
     temperatura = models.FloatField(null=True, blank=True)
     umidade = models.FloatField(null=True, blank=True)
     precipitacao = models.FloatField(null=True, blank=True)
@@ -20,4 +22,4 @@ class DadoClimatico(models.Model):
     direcao_vento_id = models.ForeignKey(DirecaoVento, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.dispositivo} - {self.data}"
+        return f"{self.dispositivo} - {self.time}"

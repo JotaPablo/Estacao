@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'timescale.db',
     'corsheaders',
-    'timescale.db',
     'rest_framework',
     'rest_framework.authtoken',
     'Dispositivo',
@@ -84,7 +83,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Estacao.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -93,13 +91,13 @@ DATABASES = {
         'ENGINE': 'timescale.db.backends.postgis', 
         'NAME': 'estacao_teste',
         'USER': 'postgres',
-        'PASSWORD': 'daviddb',
+        'PASSWORD': 'aratinha',
         'HOST': 'localhost',
-        'PORT': '5433',
+        'PORT': '5432',
     }
 }
 
-TIMESCALE_MIGRATE_HYPERTABLE_WITH_FRESH_TABLE = True
+TIMESCALE_MIGRATE_HYPERTABLE_WITH_FRESH_TABLE = False
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -125,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 

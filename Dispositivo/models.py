@@ -6,6 +6,10 @@ from django.contrib.gis.geos import Point
 
 
 class Dispositivo(models.Model):
+    
+    class Meta:
+        db_table = "dispositivo"
+    
     token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     descricao = models.TextField(blank=True, null=True)
     localizacao = models.PointField(geography=True, null=True, default=Point(0.0, 0.0))
