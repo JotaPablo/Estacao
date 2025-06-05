@@ -3,8 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import DadoClimatico
 from .serializer import DadoClimaticoSerializer
+from django.db.models import Count, Avg
 from Dispositivo.models import Dispositivo
 from Direcao_Vento.models import DirecaoVento
+from django.utils import timezone
+from datetime import datetime
 from utils import is_valid_uuid, get_dispositivo
 
 class DadoClimaticoListView(APIView):
@@ -69,7 +72,7 @@ class DadoClimaticoListView(APIView):
 
                 novo_dado = DadoClimatico.objects.create(
                     dispositivo=dispositivo,
-                    data=data,
+                    time=data,
                     temperatura=float(temperatura) if temperatura else None,
                     umidade=float(umidade) if umidade else None,
                     precipitacao=float(precipitacao) if precipitacao else None,
@@ -131,7 +134,7 @@ class DadoClimaticoDetailView(APIView):
         direcao_vento_nome = request.data.get('direcao_vento')
 
         if data is not None:
-            dado.data = data
+            dado.time = data
         if temperatura is not None:
             try:
                 dado.temperatura = float(temperatura)
@@ -203,3 +206,38 @@ class DadoClimaticoDispositivoView(APIView):
             'msg': f'Dados climáticos do dispositivo {identificador}.',
             'dados_climaticos': serializer.data
         }, status=200)
+        
+        
+class QueryTimeBucketView(APIView):
+    def get(self, request, identificador):
+        
+        dispositivo = get_dispositivo(identificador)
+        if not dispositivo:
+            return Response({
+                'status': 404,
+                'msg': 'Dispositivo não encontrado.'
+            }, status=404)
+            
+        inicio_str = request.GET.get('inicio')
+        fim_str = request.GET.get('fim')
+
+        if not inicio_str or not fim_str:
+            return Response({
+                'status': 400,
+                'msg': 'Parâmetros "inicio" e "fim" são obrigatórios.'
+            }, status=400)
+
+            
+        inicio = timezone.make_aware(datetime.fromisoformat(inicio_str))
+        fim = timezone.make_aware(datetime.fromisoformat(fim_str))
+        
+        query = (DadoClimatico.timescale
+         .filter(dispositivo=dispositivo, time__range=(inicio, fim))
+         .time_bucket_gapfill('time', '1 week', inicio, fim)
+         .annotate(Avg('temperatura')))
+        
+        return Response({
+            'status': 200,
+            'dados': list(query)
+        })
+        

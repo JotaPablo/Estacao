@@ -14,7 +14,6 @@ class DadoClimatico(TimescaleModel):
         db_table = "dado_climatico"
 
     dispositivo = models.ForeignKey(Dispositivo, on_delete=models.CASCADE)
-    #data = models.DateTimeField()
     temperatura = models.FloatField(null=True, blank=True)
     umidade = models.FloatField(null=True, blank=True)
     precipitacao = models.FloatField(null=True, blank=True)
