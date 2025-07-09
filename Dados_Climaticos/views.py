@@ -94,7 +94,6 @@ class DadoClimaticoListView(APIView):
             'dados_criados': criados,
             'erros': erros
         }, status=207 if erros else 201)
-
             
 class DadoClimaticoDetailView(APIView):
     def get_object(self, id):
@@ -188,7 +187,6 @@ class DadoClimaticoDetailView(APIView):
             'msg': 'Dado climático deletado com sucesso.'
         }, status=204)
 
-
 class DadoClimaticoDispositivoView(APIView):
     
       def get(self, request, identificador):
@@ -206,38 +204,5 @@ class DadoClimaticoDispositivoView(APIView):
             'msg': f'Dados climáticos do dispositivo {identificador}.',
             'dados_climaticos': serializer.data
         }, status=200)
-        
-        
-class QueryTimeBucketView(APIView):
-    def get(self, request, identificador):
-        
-        dispositivo = get_dispositivo(identificador)
-        if not dispositivo:
-            return Response({
-                'status': 404,
-                'msg': 'Dispositivo não encontrado.'
-            }, status=404)
-            
-        inicio_str = request.GET.get('inicio')
-        fim_str = request.GET.get('fim')
 
-        if not inicio_str or not fim_str:
-            return Response({
-                'status': 400,
-                'msg': 'Parâmetros "inicio" e "fim" são obrigatórios.'
-            }, status=400)
-
-            
-        inicio = timezone.make_aware(datetime.fromisoformat(inicio_str))
-        fim = timezone.make_aware(datetime.fromisoformat(fim_str))
-        
-        query = (DadoClimatico.timescale
-         .filter(dispositivo=dispositivo, time__range=(inicio, fim))
-         .time_bucket_gapfill('time', '1 week', inicio, fim)
-         .annotate(Avg('temperatura')))
-        
-        return Response({
-            'status': 200,
-            'dados': list(query)
-        })
         

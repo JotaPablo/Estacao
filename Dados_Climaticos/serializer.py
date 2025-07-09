@@ -17,3 +17,4 @@ class DadoClimaticoSerializer(serializers.ModelSerializer):
             "velocidade_vento",
             "direcao_vento",
         ]
+        

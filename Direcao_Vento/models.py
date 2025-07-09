@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 class DirecaoVento(models.Model):
     
     class Meta:
