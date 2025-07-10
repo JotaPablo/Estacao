@@ -46,12 +46,23 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_spectacular',
     'Dispositivo',
     'Dados_Climaticos',
     'Direcao_Vento',
-
+    
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Plataforma Cacau Estação Meteorológica API",
+    "DESCRIPTION": "API para manutenção das estações da Plataforma Ccau",
+    "VERSION": "1.0.0",
+    "SERVE INCLUDE SCHEMA": False,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -89,11 +100,11 @@ WSGI_APPLICATION = 'Estacao.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'timescale.db.backends.postgis', 
-        'NAME': 'estacao_teste',
+        'NAME': 'estacao',
         'USER': 'postgres',
-        'PASSWORD': 'aratinha',
+        'PASSWORD': 'daviddb',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '5433',
     }
 }
 
