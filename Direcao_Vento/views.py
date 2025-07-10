@@ -36,7 +36,12 @@ class DirecaoVentoListView(APIView):
 
 
     @extend_schema(
-        description="Cria uma nova direção do vento",
+        description=(
+            "Cria uma nova direção do vento\n\n"
+            "**Nome**:\n"
+                "- Campo obrigatório\n"
+                "- Não pode ser repetido\n\n"
+            ),
         request=DirecaoVentoSerializer,
         responses={
             status.HTTP_201_CREATED: DirecaoVentoSerializer,
@@ -55,13 +60,13 @@ class DirecaoVentoListView(APIView):
             ),
             OpenApiExample(
                 "Campo obrigatório",
-                value={"error": "O campo 'nome' é obrigatório"},
+                value={"nome": ["Este campo é obrigatório."]},
                 response_only=True,
                 status_codes=['400']
             ),
             OpenApiExample(
                 "Nome duplicado",
-                value={"error": "Já existe uma direção do vento com esse nome"},
+                value={"erro": "Já existe uma direção do vento com esse nome"},
                 response_only=True,
                 status_codes=['400']
             )
@@ -78,13 +83,13 @@ class DirecaoVentoListView(APIView):
         """
         nome = request.data.get('nome')
         if not nome:  # Validação de campo obrigatório
-            return Response({"error": "O campo 'nome' é obrigatório"}, status=400)
+            return Response({"nome": ["Este campo é obrigatório."]}, status=400)
         
         nome_upper = nome.upper()  # Padronização para maiúsculas
         
         # Verifica duplicatas
         if DirecaoVento.objects.filter(nome=nome_upper).exists():
-            return Response({"error": "Nome já existe"}, status=400)
+            return Response({"erro": "Já existe uma direção do vento com esse nome"}, status=400)
 
         # Cria e retorna o novo objeto
         direcao = DirecaoVento.objects.create(nome=nome_upper)
@@ -116,7 +121,7 @@ class DirecaoVentoDetailView(APIView):
             ),
             OpenApiExample(
                 "Não encontrado",
-                value={"error": "Direção do vento não encontrada"},
+                value={"erro": "Direção do vento não encontrada"},
                 response_only=True,
                 status_codes=['404']
             )
@@ -131,10 +136,15 @@ class DirecaoVentoDetailView(APIView):
             serializer = DirecaoVentoSerializer(direcao)
             return Response(serializer.data)
         except DirecaoVento.DoesNotExist:
-            return Response({"error": "Não encontrada"}, status=404)
+            return Response({"erro": "Direção do vento não encontrada"}, status=404)
 
     @extend_schema(
-        description="Atualiza uma direção do vento existente",
+        description=(
+            "Atualiza uma direção do vento existente\n\n"
+            "**Nome**:\n"
+                "- Campo obrigatório\n"
+                "- Não pode ser repetido\n\n"
+            ),
         request=DirecaoVentoSerializer,
         responses={
             status.HTTP_200_OK: DirecaoVentoSerializer,
@@ -154,19 +164,19 @@ class DirecaoVentoDetailView(APIView):
             ),
             OpenApiExample(
                 "Campo obrigatório",
-                value={"error": "O campo 'nome' é obrigatório para atualização"},
+                value={"nome": ["Este campo é obrigatório."]},
                 response_only=True,
                 status_codes=['400']
             ),
             OpenApiExample(
                 "Nome duplicado",
-                value={"error": "Já existe uma direção do vento com esse nome"},
+                value={"erro": "Já existe uma direção do vento com esse nome"},
                 response_only=True,
                 status_codes=['400']
             ),
             OpenApiExample(
                 "Não encontrado",
-                value={"error": "Direção do vento não encontrada"},
+                value={"erro": "Direção do vento não encontrada"},
                 response_only=True,
                 status_codes=['404']
             )
@@ -186,13 +196,13 @@ class DirecaoVentoDetailView(APIView):
             nome = request.data.get('nome')
             
             if not nome:  # Validação de campo obrigatório
-                return Response({"error": "Nome obrigatório"}, status=400)
+                return Response({"nome": ["Este campo é obrigatório."]}, status=400)
             
             nome_upper = nome.upper()
             
             # Verifica duplicatas excluindo o próprio registro
             if DirecaoVento.objects.filter(nome=nome_upper).exclude(id=id).exists():
-                return Response({"error": "Nome já existe"}, status=400)
+                return Response({"erro": "Já existe uma direção do vento com esse nome"}, status=400)
 
             # Atualiza e salva
             direcao.nome = nome_upper
@@ -200,7 +210,7 @@ class DirecaoVentoDetailView(APIView):
             serializer = DirecaoVentoSerializer(direcao)
             return Response(serializer.data)
         except DirecaoVento.DoesNotExist:
-            return Response({"error": "Não encontrada"}, status=404)
+            return Response({"erro": "Direção do vento não encontrada"}, status=404)
 
     @extend_schema(
         description="Exclui uma direção do vento",
@@ -211,7 +221,7 @@ class DirecaoVentoDetailView(APIView):
         examples=[
             OpenApiExample(
                 "Não encontrado",
-                value={"error": "Direção do vento não encontrada"},
+                value={"erro": "Direção do vento não encontrada"},
                 response_only=True,
                 status_codes=['404']
             )
@@ -226,4 +236,4 @@ class DirecaoVentoDetailView(APIView):
             direcao.delete()
             return Response(status=204)  # Resposta vazia para sucesso
         except DirecaoVento.DoesNotExist:
-            return Response({"error": "Não encontrada"}, status=404)
+            return Response({"erro": "Direção do vento não encontrada"}, status=404)
