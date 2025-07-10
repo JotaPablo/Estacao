@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django.urls import path, include
 
 router = routers.DefaultRouter()
 
@@ -26,5 +28,8 @@ urlpatterns = [
     path('', include('Dispositivo.urls')),
     path('', include('Direcao_Vento.urls')),
     path('', include('Dados_Climaticos.urls')),
-    
+
+    # Rotas do Swagger
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]

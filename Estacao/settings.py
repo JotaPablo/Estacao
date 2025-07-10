@@ -29,7 +29,9 @@ SECRET_KEY = 'django-insecure-4v=r17^$xaer4vd_7_2ozk4q@@j&h6zfzw)2m86w2@z^a0=nt_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.ngrok.io', '.ngrok-free.app'] # Usado para testar remotamente com o ngrok
+
 
 # Application definition
 
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     'timescale.db',
     'corsheaders',
     'rest_framework',
+    'drf_spectacular', # Para habilitar o Swagger
     'rest_framework.authtoken',
     'Dispositivo',
     'Dados_Climaticos',
@@ -52,8 +55,42 @@ INSTALLED_APPS = [
 
 ]
 
+REST_FRAMEWORK = {
+    # Aqui você pode ter outras configurações que já existam, só adicione essa linha para usar o AutoSchema
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# Configurações do drf-spectacular para personalizar a documentação Swagger
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Estacao API",
+    "DESCRIPTION": "API para monitoramento climático e dispositivos",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "AUTHENTICATION_WHITELIST": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "SWAGGER_UI_SETTINGS": {
+        "persistAuthorization": True,
+        "deepLinking": True,
+        "displayRequestDuration": True,
+        "filter": True,
+        "persistAuthorization": True
+    },
+    "ENABLE_DJANGO_DEPLOY_CHECK": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SHOW_REQUEST_HEADERS": True,
+    "SCHEMA_PATH_PREFIX": r'/api/',
+    "SCHEMA_COERCE_PATH_PK": True,
+    "SCHEMA_COERCE_METHOD_NAMES": {
+        "update": "put"
+    },
+    "COMPONENT_SPLIT_PATCH": True,
+    "COMPONENT_NO_READ_ONLY_REQUIRED": True
+}
+
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', # Para permitir acesso a API de outros links
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -139,3 +176,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# CORS: Permitir requisições de qualquer origem (útil para testes com ngrok e frontend externo)
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Se quiser mais controle, use isso em vez do ALL_ORIGINS:
+# CORS_ALLOWED_ORIGINS = [
+#     "https://abc123.ngrok.io",
+#     "http://localhost:3000",  # Exemplo: se estiver usando React localmente
+# ]
