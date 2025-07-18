@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Dispositivo
 from django.contrib.gis.geos import Point
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
+
 
 class DispositivoSerializer(serializers.ModelSerializer):
     # Validação geográfica da latitude e longitude
@@ -54,3 +56,9 @@ class DispositivoSerializer(serializers.ModelSerializer):
         rep['latitude'] = instance.localizacao.y if instance.localizacao else None
         rep['longitude'] = instance.localizacao.x if instance.localizacao else None
         return rep
+    
+class DispositivoSimplesSerializer(GeoFeatureModelSerializer):
+    class Meta:
+        model = Dispositivo
+        fields = ['id', 'descricao', 'localizacao']  
+        geo_field = 'localizacao'  # Especifica o campo geográfico
